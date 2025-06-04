@@ -1,0 +1,29 @@
+# CHANGELOG
+
+## [2025-06-03] Inicio del proyecto
+- Estructura base del proyecto Django creada.
+- Configuración inicial para autenticación con clave numérica.
+- Preparación para integración de NiceGUI y MaterialUI.
+- Definición de modelos para arrendatarios, locales, departamentos y pagos.
+- Configuración de seguridad básica y protección contra inyección de datos. (el login está en usuarios, no en autenticacion, la carpeta de autenticacion esta libre para otro login esa es...).
+- Creación de vistas básicas para autenticación y registro de usuarios.
+
+## [2025-06-03] Mejoras visuales y accesibilidad en login y dashboard
+
+- Se implementó fuente global Roboto en toda la aplicación.
+- Se mejoró el contraste de los botones circulares, de entrar y de logout en ambos modos (claro/oscuro).
+- El botón de logout ahora es obsidiana en modo claro y cyan en modo oscuro, con hover cyan/blanco respectivamente.
+- Se ajustó el espaciado y tamaño del contenedor de login y dashboard para mejor legibilidad y accesibilidad.
+- Se añadió animación y feedback visual a los botones numéricos y de acción.
+- Se implementó spinner triangular animado y skeleton de carga con fade-in en el login.
+- Se mantuvo la funcionalidad de modo claro/oscuro en todas las vistas principales.
+
+## [2025-06-03] Funcionalidad avanzada en dashboard
+
+- Se implementó la visualización dinámica de tarjetas para locales, departamentos y parqueaderos, mostrando información de arrendatarios y pagos.
+- Se agregó la funcionalidad de registrar abonos desde un modal, con notificación visual y actualización automática de la tarjeta.
+- Ahora se muestra el monto abonado en USD y la fecha del abono en la tarjeta dinámica.
+- El enlace de WhatsApp y el campo de celular permiten ingresar el número libremente, sin prefijo.
+- El modal de edición muestra el título y campos de acuerdo a la categoría seleccionada (Local Comercial, Departamento o Parqueadero).
+- Se permite editar nombre del local, nombre y celular del arrendatario desde el modal, con notificación de éxito.
+- Mejoras de accesibilidad, contraste y experiencia visual mantenidas en todos los componentes.

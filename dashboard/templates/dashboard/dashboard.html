@@ -1,0 +1,372 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Aguirre Tamayo</title>
+    <link rel="stylesheet" href="{% static 'css/login_custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/dashboard_custom.css' %}">
+    <script>
+    function toggleMode() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('modo', document.body.classList.contains('dark-mode') ? 'oscuro' : 'claro');
+        document.getElementById('icono-modo').textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
+    }
+    window.onload = function() {
+        if(localStorage.getItem('modo') === 'oscuro') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('icono-modo').textContent = '🌙';
+        }
+    }
+    </script>
+    <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+    <div class="login-container" id="dashboard-content">
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button class="logout-btn" title="Cerrar sesión">⏻</button>
+        </form>
+        <button class="modo-btn" onclick="toggleMode()" title="Cambiar modo claro/oscuro">
+            <span id="icono-modo">☀️</span>
+        </button>
+        <h1 class="titulo-login" style="margin-bottom: 1.5rem;">Bienvenido al Registro de Alquileres Edificio Aguirre Tamayo</h1>
+        
+        <!-- Mosaico de tarjetas dinámicas -->
+        <div class="mosaico-dashboard">
+            {% for local in locales %}
+            <div class="tarjeta-dashboard{% if not local.rentado %} no-rentado{% endif %}">
+                <div class="tarjeta-header">
+                    <span class="tarjeta-titulo">{{ local.nombre }}</span>
+                    <span style="float:right; color:#00bcd4; font-size:1em;">
+                        {{ local.precio }} USD
+                    </span>
+                    {% if local.arrendatario and local.ultimo_pago %}
+                        {% if local.ultimo_pago.fecha_proximo_pago < today %}
+                            <span class="tarjeta-alerta alerta-vencida">Vencido</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="tarjeta-body">
+                    {% if local.arrendatario %}
+                        <div><strong>Inquilino:</strong> {{ local.arrendatario.nombre }}</div>
+                        <div><strong>Próximo pago:</strong>
+                            {% if local.ultimo_pago %}
+                                {{ local.ultimo_pago.fecha_proximo_pago|date:"d/m/Y" }}
+                            {% else %}
+                                Sin pagos
+                            {% endif %}
+                        </div>
+                        <div><strong>Último pago:</strong>
+                            {% if local.ultimo_pago %}
+                                {{ local.ultimo_pago.fecha_pago|date:"d/m/Y" }}
+                            {% else %}
+                                Sin pagos
+                            {% endif %}
+                        </div>
+                        <div><strong>Garantía:</strong>
+                            {% if local.garantia %}
+                                {{ local.garantia }} USD
+                            {% else %}
+                                Sin garantía
+                            {% endif %}
+                        </div>
+                        <div><strong>Monto abono:</strong>
+                            {% if local.ultimo_pago %}
+                                {{ local.ultimo_pago.monto }} USD
+                                <span style="float:right; color:#00bcd4; font-size:0.98em;">
+                                    {{ local.ultimo_pago.fecha_pago|date:"d/m/Y" }}
+                                </span>
+                            {% else %}
+                                Sin abonos
+                            {% endif %}
+                        </div>
+                        <div>
+                            <strong>Celular:</strong>
+                            <a href="https://wa.me/{{ local.arrendatario.telefono }}" target="_blank" class="whatsapp-link">
+                                {{ local.arrendatario.telefono }}
+                            </a>
+                        </div>
+                    {% else %}
+                        <div><em>Sin arrendatario</em></div>
+                    {% endif %}
+                </div>
+                <div class="tarjeta-footer">
+                    <button class="btn-entrar btn-abono"
+                        onclick="abrirModal('abono', '{{ local.id }}', '{{ local.nombre }}', '{{ local.arrendatario.nombre|default:"" }}', '{{ local.ultimo_pago.fecha_proximo_pago|date:"d/m/Y"|default:"" }}', '{{ local.ultimo_pago.fecha_pago|date:"d/m/Y"|default:"" }}', '{{ local.arrendatario.telefono|default:"" }}')">
+                        Abonar
+                    </button>
+                    <button class="btn-entrar btn-editar"
+                        onclick="abrirModal(
+    'editar',
+    '{{ local.id }}',
+    '{{ local.nombre }}',
+    '{{ local.arrendatario.nombre|default:"" }}',
+    '', '', '{{ local.arrendatario.telefono|default:"" }}',
+    '{% if local.es_departamento %}Departamento{% elif local.es_parqueadero %}Parqueadero{% else %}Local Comercial{% endif %}',
+    '{{ local.precio|default:"" }}',
+    '{{ local.garantia|default:"" }}'
+)">
+                        Editar
+                    </button>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:flex-end;margin-top:0.5rem;">
+                    <span id="estado-rentado-{{ local.id }}" style="margin-right:12px;">
+                        {% if local.rentado %}Rentado{% else %}Desocupado{% endif %}
+                    </span>
+                    <label class="switch-toggle">
+                        <input type="checkbox"
+                            {% if local.rentado %}checked{% endif %}
+                            onchange="actualizarRentado({{ local.id }}, this.checked)"
+                            id="toggle-rentado-{{ local.id }}">
+                        <span class="slider-toggle"></span>
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Bottombar -->
+        <div class="bottombar-dashboard">
+            <button class="bottombar-btn active"><span>🏠</span><br>Inicio</button>
+            <button class="bottombar-btn"><span>🏢</span><br>Locales</button>
+            <button class="bottombar-btn"><span>🏬</span><br>Departamentos</button>
+            <button class="bottombar-btn"><span>🚗</span><br>Parqueaderos</button>
+            <button class="bottombar-btn"><span>🧮</span><br>Calculadora</button>
+        </div>
+
+        <!-- Botón flotante para nueva tarjeta -->
+        <button id="btn-nueva-tarjeta" class="fab-nueva-tarjeta" onclick="abrirModalNuevaTarjeta()">
+            +
+        </button>
+    </div>
+
+    <!-- Modal para abonar o editar -->
+    <div id="modal-dashboard" class="modal-dashboard" style="display:none;">
+        <div class="modal-content-dashboard">
+            <span class="close-modal" onclick="cerrarModal()">&times;</span>
+            <h2 id="modal-titulo"></h2>
+            <div id="modal-body">
+                <!-- Aquí se cargará el contenido dinámico -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para nueva tarjeta -->
+    <div id="modal-nueva-tarjeta" class="modal-dashboard" style="display:none;">
+        <div class="modal-content-dashboard">
+            <span class="close-modal" onclick="cerrarModalNuevaTarjeta()">&times;</span>
+            <h2>Crear Nueva Locación</h2>
+            <form id="form-nueva-tarjeta" onsubmit="return enviarNuevaTarjeta(event)" style="display:flex;flex-direction:column;gap:0.2rem;max-width:400px;margin:auto;">
+                <label>Categoría:</label>
+                <select id="nuevo-tipo" class="input-clave" required>
+                    <option value="local">Local Comercial</option>
+                    <option value="departamento">Departamento</option>
+                    <option value="parqueadero">Parqueadero</option>
+                </select>
+                <label>Locación:</label>
+                <input id="nuevo-nombre" type="text" class="input-clave" required>
+                <label>Inquilino:</label>
+                <input id="nuevo-inquilino" type="text" class="input-clave" required>
+                <label>Celular:</label>
+                <input id="nuevo-telefono" type="text" class="input-clave" required>
+                <label>Precio Alquiler (USD):</label>
+                <input id="nuevo-precio" type="number" min="0" step="0.01" class="input-clave" required>
+                <label>Garantía (USD):</label>
+                <input id="nuevo-garantia" type="number" min="0" step="0.01" class="input-clave" required>
+                <label>¿Rentado?</label>
+                <input id="nuevo-rentado" type="checkbox" style="transform:scale(1.3);margin-left:10px;">
+                <button type="submit" class="btn-entrar" style="margin-top:1.2rem;">Crear</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+let abonoLocalId = null;
+
+function abrirModal(tipo, localId, nombre, inquilino, proximo_pago, ultimo_pago, telefono, categoria, precio, garantia) {
+    document.getElementById('modal-dashboard').style.display = 'flex';
+    if (tipo === 'abono') {
+        document.getElementById('modal-titulo').textContent = 'Registrar Abono';
+    } else {
+        // Usa la categoría para el título
+        document.getElementById('modal-titulo').textContent = 'Editar ' + (categoria || 'Local');
+    }
+    abonoLocalId = localId; // Guardar el ID para el envío
+    let contenido = '';
+    if (tipo === 'abono') {
+        contenido = `
+            <div><strong>Local:</strong> ${nombre}</div>
+            <div><strong>Inquilino:</strong> ${inquilino}</div>
+            <div><strong>Próximo pago:</strong> ${proximo_pago}</div>
+            <div><strong>Último pago:</strong> ${ultimo_pago}</div>
+            <form onsubmit="return enviarAbono(event)">
+                <label>Monto abono:</label>
+                <input id="abono-monto" type="number" min="0" step="0.01" class="input-clave" required>
+                <button type="submit" class="btn-entrar" style="margin-left:10px;">Guardar</button>
+            </form>
+        `;
+    } else {
+        contenido = `
+            <form onsubmit="return enviarEdicion(event)">
+        <div><label>Categoría:</label></div>
+        <div><input id="edit-categoria" type="text" class="input-clave" style="width:90%;" value="${categoria}" disabled></div>
+        <div><label>Locación:</label></div>
+        <div><input id="edit-nombre-local" type="text" class="input-clave" style="width:90%;" value="${nombre}" required></div>
+        <div><label>Inquilino:</label></div>
+        <div><input id="edit-nombre-arrendatario" type="text" class="input-clave" style="width:90%;" value="${inquilino}" required></div>
+        <div><label>Celular:</label></div>
+        <div><input id="edit-telefono-arrendatario" type="text" class="input-clave" style="width:90%;" value="${telefono}" required></div>
+        <div><label>Precio Alquiler (USD):</label></div>
+        <div><input id="edit-precio-local" type="number" min="0" step="0.01" class="input-clave" style="width:90%;" required></div>
+        <div><label>Garantía (USD):</label></div>
+        <div><input id="edit-garantia-local" type="number" min="0" step="0.01" class="input-clave" style="width:90%;" required></div>
+        <div><button type="submit" class="btn-entrar" style="margin-top:1rem;">Guardar cambios</button></div>
+    </form>
+        `;
+    }
+    document.getElementById('modal-body').innerHTML = contenido;
+    // Al abrir el modal, llena los valores de precio y garantía si existen
+    setTimeout(() => {
+        document.getElementById('edit-precio-local').value = window.localPrecio || '';
+        document.getElementById('edit-garantia-local').value = window.localGarantia || '';
+    }, 100);
+}
+    function cerrarModal() {
+        document.getElementById('modal-dashboard').style.display = 'none';
+    }
+    function abrirModalNuevaTarjeta() {
+        document.getElementById('modal-nueva-tarjeta').style.display = 'flex';
+    }
+    function cerrarModalNuevaTarjeta() {
+        document.getElementById('modal-nueva-tarjeta').style.display = 'none';
+    }
+    function getCSRFToken() {
+        return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    }
+
+    function enviarAbono(event) {
+        event.preventDefault();
+        const monto = document.getElementById('abono-monto').value;
+        fetch("{% url 'abonar' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `local_id=${abonoLocalId}&monto=${monto}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                mostrarNotificacion("Abono registrado correctamente");
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                mostrarNotificacion("Error al registrar abono", true);
+            }
+        });
+        return false;
+    }
+
+    function enviarEdicion(event) {
+        event.preventDefault();
+        const nombre_local = document.getElementById('edit-nombre-local').value;
+        const nombre_arrendatario = document.getElementById('edit-nombre-arrendatario').value;
+        const telefono_arrendatario = document.getElementById('edit-telefono-arrendatario').value;
+        const precio_local = document.getElementById('edit-precio-local').value;
+        const garantia_local = document.getElementById('edit-garantia-local').value;
+        fetch("{% url 'editar_local' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `local_id=${abonoLocalId}&nombre_local=${encodeURIComponent(nombre_local)}&nombre_arrendatario=${encodeURIComponent(nombre_arrendatario)}&telefono_arrendatario=${encodeURIComponent(telefono_arrendatario)}&precio_local=${precio_local}&garantia_local=${garantia_local}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                mostrarNotificacion("Datos actualizados correctamente");
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                mostrarNotificacion("Error al actualizar datos", true);
+            }
+        });
+        return false;
+    }
+
+    function enviarNuevaTarjeta(event) {
+        event.preventDefault();
+        fetch("{% url 'crear_local' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `tipo=${document.getElementById('nuevo-tipo').value}&nombre=${encodeURIComponent(document.getElementById('nuevo-nombre').value)}&inquilino=${encodeURIComponent(document.getElementById('nuevo-inquilino').value)}&telefono=${encodeURIComponent(document.getElementById('nuevo-telefono').value)}&precio=${document.getElementById('nuevo-precio').value}&garantia=${document.getElementById('nuevo-garantia').value}&rentado=${document.getElementById('nuevo-rentado').checked ? 1 : 0}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                mostrarNotificacion("Nuevo inquilino creado con éxito");
+                cerrarModalNuevaTarjeta();
+                setTimeout(() => location.reload(), 1200);
+            } else {
+                mostrarNotificacion("Error al crear locación", true);
+            }
+        });
+        return false;
+    }
+
+    function actualizarRentado(localId, rentado) {
+        // Cambia el texto inmediatamente
+        const estado = document.getElementById('estado-rentado-' + localId);
+        if (estado) {
+            estado.textContent = rentado ? "Rentado" : "Desocupado";
+        }
+        fetch("{% url 'actualizar_rentado' %}", {
+            method: "POST",
+            headers: {
+                "X-CSRFToken": getCSRFToken(),
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `local_id=${localId}&rentado=${rentado}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok) {
+                mostrarNotificacion(rentado ? "Locación marcada como rentada" : "Locación marcada como desocupada");
+                setTimeout(() => location.reload(), 800);
+            } else {
+                mostrarNotificacion("Error al actualizar estado", true);
+            }
+        });
+    }
+
+    // Notificación flotante
+    function mostrarNotificacion(msg, error=false) {
+        let n = document.createElement('div');
+        n.textContent = msg;
+        n.style.position = 'fixed';
+        n.style.bottom = '30px';
+        n.style.right = '30px';
+        n.style.background = error ? '#ff3b3b' : '#00e6f6';
+        n.style.color = '#fff';
+        n.style.padding = '1rem 2rem';
+        n.style.borderRadius = '16px';
+        n.style.boxShadow = '0 2px 16px #23232344';
+        n.style.fontWeight = 'bold';
+        n.style.zIndex = 2000;
+        n.style.opacity = 0.95;
+        document.body.appendChild(n);
+        setTimeout(() => { n.remove(); }, 1200);
+    }
+    </script>
+    <script>
+if (localStorage.getItem('modo') === 'oscuro') {
+    document.documentElement.classList.add('dark-mode');
+    document.body && document.body.classList.add('dark-mode');
+}
+</script>
+</body>
+</html>

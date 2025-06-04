@@ -1,0 +1,4 @@
+body {
+    background: linear-gradient(135deg, #0ff1ce 0%, #00e6f6 100%);
+    font-family: 'Roboto', Arial, sans-serif;
+}

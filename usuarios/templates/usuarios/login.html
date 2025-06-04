@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>F.Aguirre wevdev</title>
+    <link rel="stylesheet" href="{% static 'css/login_custom.css' %}">
+    <script>
+    function toggleMode() {
+        document.body.classList.toggle('dark-mode');
+        localStorage.setItem('modo', document.body.classList.contains('dark-mode') ? 'oscuro' : 'claro');
+        document.getElementById('icono-modo').textContent = document.body.classList.contains('dark-mode') ? '🌙' : '☀️';
+    }
+    window.onload = function() {
+        if(localStorage.getItem('modo') === 'oscuro') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('icono-modo').textContent = '🌙';
+        }
+    }
+    function agregarNumero(num, btn) {
+        let input = document.getElementById('clave');
+        if(input.value.length < 5) {
+            input.value += num;
+            // Oculta el número al presionar
+            btn.textContent = '';
+            setTimeout(() => { btn.textContent = num; }, 400);
+        }
+    }
+    function borrarClave() {
+        document.getElementById('clave').value = '';
+    }
+    </script>
+</head>
+<body>
+    <div id="loader-bg">
+        <div class="loader-content">
+            <div class="skeleton-login">
+                <div class="spinner-triangular">
+                    <svg width="80" height="80" viewBox="0 0 80 80">
+                        <g>
+                            <polygon points="40,10 70,65 10,65" fill="none" stroke="#00e6f6" stroke-width="5"/>
+                            <polygon points="40,18 62,61 18,61" fill="none" stroke="#0ff1ce" stroke-width="3"/>
+                        </g>
+                        <g>
+                            <polyline points="40,10 45,25 35,25 40,10" fill="#00e6f6" stroke="#181c24" stroke-width="1"/>
+                            <polyline points="70,65 55,60 60,70 70,65" fill="#0ff1ce" stroke="#181c24" stroke-width="1"/>
+                            <polyline points="10,65 25,60 20,70 10,65" fill="#00e6f6" stroke="#181c24" stroke-width="1"/>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="login-container" id="login-content" style="opacity:0;">
+        <button class="modo-btn" onclick="toggleMode()" title="Cambiar modo claro/oscuro">
+            <span id="icono-modo">☀️</span>
+        </button>
+        <div class="titulo-login">Ingresa tu clave numérica</div>
+        {% if error %}
+            <p style="color:red;">{{ error }}</p>
+        {% endif %}
+        <input id="clave" class="input-clave" name="clave" type="password" maxlength="5" readonly required>
+        <div class="teclado-circular">
+            <button type="button" class="btn-num" id="btn1" onclick="agregarNumero('1', this)">1</button>
+            <button type="button" class="btn-num" id="btn2" onclick="agregarNumero('2', this)">2</button>
+            <button type="button" class="btn-num" id="btn3" onclick="agregarNumero('3', this)">3</button>
+        </div>
+        <form method="post" style="margin:0;">
+            {% csrf_token %}
+            <input type="hidden" id="clave_hidden" name="clave">
+            <button type="submit" class="btn-entrar">Entrar</button>
+            <button type="button" class="btn-borrar" onclick="borrarClave()">Borrar</button>
+        </form>
+        <!-- Ejemplo en dashboard.html -->
+        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button class="logout-btn" title="Cerrar sesión">⏻</button>
+        </form>
+    </div>
+    <script>
+    document.querySelector('form').onsubmit = function() {
+        document.getElementById('clave_hidden').value = document.getElementById('clave').value;
+        return true;
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        setTimeout(function() {
+            document.getElementById('loader-bg').style.opacity = 0;
+            setTimeout(function() {
+                document.getElementById('loader-bg').style.display = 'none';
+                let login = document.getElementById('login-content');
+                login.style.opacity = 1;
+            }, 500);
+        }, 1500); // 1.5 segundos de carga
+    });
+    </script>
+</body>
+</html>
