@@ -1,0 +1,14 @@
+# filepath: render.yaml
+services:
+  - type: web
+    name: alquiler
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn config.wsgi:application
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings
+      - key: SECRET_KEY
+        value: tu-secret-key
+      - key: DEBUG
+        value: False

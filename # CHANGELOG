@@ -27,3 +27,13 @@
 - El modal de edición muestra el título y campos de acuerdo a la categoría seleccionada (Local Comercial, Departamento o Parqueadero).
 - Se permite editar nombre del local, nombre y celular del arrendatario desde el modal, con notificación de éxito.
 - Mejoras de accesibilidad, contraste y experiencia visual mantenidas en todos los componentes.
+
+## [2025-06-04] Mejoras y despliegue
+
+- Se agregó el campo de garantía en la tarjeta dinámica, visible entre "Último pago" y "Monto abono".
+- Se implementó el switch tipo toggle para el estado "Rentado/Desocupado" en cada tarjeta, con cambio dinámico de color y texto.
+- El estado de rentado ahora se puede actualizar desde la interfaz y se refleja visualmente en tiempo real.
+- Se corrigió el modo oscuro para evitar parpadeos al recargar la página.
+- Se mejoró la experiencia de usuario en los formularios modales, restaurando contraste y alineación vertical de los campos.
+- Se documentaron y aplicaron los pasos para el primer commit y push al repositorio de GitHub `disasantaclara/alquiler`.
+- Se revisaron y ajustaron las instrucciones para despliegue en plataformas cloud, y se recomendó alternativas gratuitas a Coolify.

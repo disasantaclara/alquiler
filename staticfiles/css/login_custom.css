@@ -1,0 +1,313 @@
+/* Fuente global Roboto */
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+
+body, input, button, select, textarea {
+    font-family: 'Roboto', Arial, sans-serif !important;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0ff1ce 0%, #00e6f6 100%);
+    transition: background 0.5s;
+    color: #232323;
+}
+
+.login-container {
+    background: rgba(255,255,255,0.07);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    padding: 3.5rem 3rem 2.5rem 3rem; /* más padding */
+    text-align: center;
+    position: relative;
+    width: 400px; /* más ancho */
+    min-height: 480px; /* más alto */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.titulo-login {
+    color: #232323;
+    font-size: 1.7rem;
+    margin-bottom: 2.5rem; /* más separación */
+    margin-top: 2.5rem;    /* separación desde arriba */
+    letter-spacing: 1px;
+}
+
+.teclado-circular {
+    width: 220px;
+    height: 120px;
+    margin: 0 auto 1.5rem auto;
+    position: relative;
+}
+
+.btn-num, .btn-entrar, .btn-borrar {
+    border: 2px solid #232323;
+    color: #232323;
+    background: transparent;
+}
+
+.btn-num {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid #232323; /* borde oscuro en modo claro */
+    background: transparent;
+    color: #232323;
+    font-size: 2rem;
+    font-weight: bold;
+    box-shadow: 0 0 16px 2px #00e6f6a0;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s, border-color 0.2s;
+    outline: none;
+    user-select: none;
+}
+
+.btn-num:active, .btn-entrar:active, .btn-borrar:active {
+    background: #23232322;
+    color: #00e6f6;
+}
+
+.btn-num:hover, .btn-entrar:hover, .btn-borrar:hover {
+    border-color: #00e6f6;
+    color: #00e6f6;
+}
+
+#btn1 { left: 80px; top: 0px; }
+#btn2 { left: 140px; top: 60px; }
+#btn3 { left: 20px; top: 60px; }
+
+.input-clave {
+    width: 120px;
+    font-size: 1.3rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    border: none;
+    border-bottom: 2px solid #00e6f6;
+    background: transparent;
+    color: #232323;
+    outline: none;
+    letter-spacing: 0.3em;
+}
+
+.btn-entrar, .btn-borrar {
+    margin-top: 1rem;
+    padding: 0.5rem 2.5rem;
+    border-radius: 20px;
+    border: 2px solid #00e6f6;
+    background: transparent;
+    color: #232323;
+    font-size: 1.1rem;
+    font-weight: bold;
+    box-shadow: 0 0 8px 1px #00e6f655;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+}
+
+.btn-entrar:active, .btn-borrar:active {
+    background: #00e6f622;
+    color: #00e6f6;
+    box-shadow: 0 0 16px 2px #00e6f6cc;
+}
+
+.btn-borrar {
+    margin-left: 10px;
+    background: #fff;
+    color: #232323;
+}
+
+.btn-borrar:active {
+    background: #00e6f622;
+    color: #00e6f6;
+}
+
+.modo-btn, .logout-btn {
+    position: absolute;
+    top: 24px;
+    font-size: 1.5rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+    z-index: 2;
+}
+.modo-btn { right: 24px; }
+.logout-btn { left: 24px; color: #232323; }
+
+@media (max-width: 500px) {
+    .login-container {
+        width: 95vw;
+        min-height: 400px;
+        padding: 2rem 0.5rem 1.5rem 0.5rem;
+    }
+}
+
+body.dark-mode {
+    background: linear-gradient(135deg, #232946 0%, #1a1a2e 100%);
+    color: #0ff1ce;
+}
+
+body.dark-mode .login-container {
+    background: rgba(30,30,60,0.7);
+    box-shadow: 0 8px 32px 0 rgba(0, 255, 255, 0.15);
+}
+
+body.dark-mode .titulo-login,
+body.dark-mode .input-clave {
+    color: #0ff1ce;
+}
+
+body.dark-mode .btn-num,
+body.dark-mode .btn-entrar,
+body.dark-mode .btn-borrar {
+    border-color: #0ff1ce;
+    color: #0ff1ce;
+}
+
+body.dark-mode .btn-num:active,
+body.dark-mode .btn-entrar:active,
+body.dark-mode .btn-borrar:active {
+    background: #0ff1ce22;
+    color: #232946;
+}
+
+body.dark-mode .btn-borrar {
+    background: transparent;
+    color: #0ff1ce;
+}
+
+body.dark-mode .modo-btn {
+    color: #0ff1ce;
+}
+
+/* Quita el borde de los botones modo-btn y logout-btn */
+.modo-btn, .logout-btn {
+    border: none !important;
+    color: #00e6f6;
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+    box-shadow: none;
+}
+
+body.dark-mode .modo-btn,
+body.dark-mode .logout-btn {
+    color: #0ff1ce;
+}
+
+.modo-btn:hover, .logout-btn:hover {
+    color: #fff;
+    background: #00e6f622;
+}
+
+/* Botón de entrar: borde oscuro en modo claro */
+.btn-entrar {
+    border: 2px solid #232323;
+    color: #232323;
+    background: transparent;
+}
+
+.btn-entrar:hover {
+    border-color: #00e6f6;
+    color: #00e6f6;
+}
+
+/* Modo oscuro: bordes cyan */
+body.dark-mode .modo-btn,
+body.dark-mode .logout-btn,
+body.dark-mode .btn-entrar {
+    border-color: #0ff1ce;
+    color: #0ff1ce;
+}
+
+body.dark-mode .modo-btn:hover,
+body.dark-mode .logout-btn:hover,
+body.dark-mode .btn-entrar:hover {
+    border-color: #fff;
+    color: #fff;
+}
+
+#loader-bg {
+    position: fixed;
+    z-index: 9999;
+    background: linear-gradient(135deg, #181c24 0%, #232946 100%);
+    width: 100vw;
+    height: 100vh;
+    top: 0; left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.5s;
+}
+
+.loader-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-triangular {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: spinner-rotate 1.5s linear infinite;
+    filter: drop-shadow(0 0 16px #00e6f6cc);
+    z-index: 2;
+}
+@keyframes spinner-rotate {
+    100% { transform: translate(-50%, -50%) rotate(360deg);}
+}
+
+.skeleton-login {
+    width: 320px;
+    height: 340px;
+    border-radius: 24px;
+    background: linear-gradient(90deg, #232946 25%, #232946 50%, #181c24 75%);
+    animation: skeleton-shine 1.2s infinite linear;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.17);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+@keyframes skeleton-shine {
+    0% { background-position: -320px 0; }
+    100% { background-position: 320px 0; }
+}
+
+#login-content {
+    transition: opacity 0.7s;
+}
+
+/* Botón de logout: obsidiana y hover cyan */
+.logout-btn {
+    border: none;
+    background: transparent;
+    color: #232323;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+}
+
+.logout-btn:hover {
+    color: #00e6f6;
+    background: transparent;
+}
+
+/* Modo oscuro: logout-btn cyan siempre */
+body.dark-mode .logout-btn {
+    color: #0ff1ce;
+}
+body.dark-mode .logout-btn:hover {
+    color: #fff;
+}
