@@ -37,3 +37,12 @@
 - Se mejoró la experiencia de usuario en los formularios modales, restaurando contraste y alineación vertical de los campos.
 - Se documentaron y aplicaron los pasos para el primer commit y push al repositorio de GitHub `disasantaclara/alquiler`.
 - Se revisaron y ajustaron las instrucciones para despliegue en plataformas cloud, y se recomendó alternativas gratuitas a Coolify.
+
+## [2025-06-06] Despliegue exitoso en Render y mejoras de producción
+
+- Se migró el despliegue del proyecto a Render, configurando correctamente archivos estáticos y middleware WhiteNoise para servir CSS y JS en producción.
+- Se solucionaron problemas de visualización de estilos en el login y dashboard en el entorno de producción.
+- Se documentaron y aplicaron los pasos para despliegue en Render, incluyendo configuración de `STATIC_ROOT`, ejecución de `collectstatic` y ajustes en el comando de inicio.
+- Se verificó la correcta visualización y funcionamiento de la aplicación en la URL pública de Render.
+- Se dejó lista la base para nuevas funcionalidades y mejoras inteligentes en la gestión de arrendamientos.
+

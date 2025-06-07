@@ -1,9 +1,10 @@
 {% load static %}
+{% load fecha_extras %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard - Aguirre Tamayo</title>
+    <title>Edif. - Aguirre Tamayo</title>
     <link rel="stylesheet" href="{% static 'css/login_custom.css' %}">
     <link rel="stylesheet" href="{% static 'css/dashboard_custom.css' %}">
     <script>
@@ -39,7 +40,7 @@
                 <div class="tarjeta-header">
                     <span class="tarjeta-titulo">{{ local.nombre }}</span>
                     <span style="float:right; color:#00bcd4; font-size:1em;">
-                        {{ local.precio }} USD
+                        $ {{ local.precio }}
                     </span>
                     {% if local.arrendatario and local.ultimo_pago %}
                         {% if local.ultimo_pago.fecha_proximo_pago < today %}
@@ -52,14 +53,14 @@
                         <div><strong>Inquilino:</strong> {{ local.arrendatario.nombre }}</div>
                         <div><strong>Próximo pago:</strong>
                             {% if local.ultimo_pago %}
-                                {{ local.ultimo_pago.fecha_proximo_pago|date:"d/m/Y" }}
+                                {{ local.ultimo_pago.fecha_proximo_pago|date:"d-M-Y" }}
                             {% else %}
                                 Sin pagos
                             {% endif %}
                         </div>
                         <div><strong>Último pago:</strong>
                             {% if local.ultimo_pago %}
-                                {{ local.ultimo_pago.fecha_pago|date:"d/m/Y" }}
+                                {{ local.ultimo_pago.fecha_pago|fecha_corta }}
                             {% else %}
                                 Sin pagos
                             {% endif %}
@@ -75,7 +76,7 @@
                             {% if local.ultimo_pago %}
                                 {{ local.ultimo_pago.monto }} USD
                                 <span style="float:right; color:#00bcd4; font-size:0.98em;">
-                                    {{ local.ultimo_pago.fecha_pago|date:"d/m/Y" }}
+                                    {{ local.ultimo_pago.fecha_pago|date:"d-M-Y" }}
                                 </span>
                             {% else %}
                                 Sin abonos
@@ -93,7 +94,7 @@
                 </div>
                 <div class="tarjeta-footer">
                     <button class="btn-entrar btn-abono"
-                        onclick="abrirModal('abono', '{{ local.id }}', '{{ local.nombre }}', '{{ local.arrendatario.nombre|default:"" }}', '{{ local.ultimo_pago.fecha_proximo_pago|date:"d/m/Y"|default:"" }}', '{{ local.ultimo_pago.fecha_pago|date:"d/m/Y"|default:"" }}', '{{ local.arrendatario.telefono|default:"" }}')">
+                        onclick="abrirModal('abono', '{{ local.id }}', '{{ local.nombre }}', '{{ local.arrendatario.nombre|default:"" }}', '{{ local.ultimo_pago.fecha_proximo_pago|date:"d-M-Y"|default:"" }}', '{{ local.ultimo_pago.fecha_pago|date:"d-M-Y"|default:"" }}', '{{ local.arrendatario.telefono|default:"" }}')">
                         Abonar
                     </button>
                     <button class="btn-entrar btn-editar"
@@ -367,6 +368,20 @@ if (localStorage.getItem('modo') === 'oscuro') {
     document.documentElement.classList.add('dark-mode');
     document.body && document.body.classList.add('dark-mode');
 }
+</script>
+<span id="fecha-hora-local"></span>
+<script>
+function mostrarFechaHoraLocal() {
+    const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+    const ahora = new Date();
+    const fecha = ahora.getDate().toString().padStart(2, '0') + '-' +
+                  meses[ahora.getMonth()] + '-' +
+                  ahora.getFullYear();
+    const hora = ahora.toLocaleTimeString();
+    document.getElementById('fecha-hora-local').textContent = fecha + ' ' + hora;
+}
+mostrarFechaHoraLocal();
+setInterval(mostrarFechaHoraLocal, 1000);
 </script>
 </body>
 </html>
