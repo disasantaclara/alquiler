@@ -18,7 +18,17 @@ def dashboard(request):
 
     # Asigna el último pago a cada local
     for local in locales:
-        local.ultimo_pago = ultimo_pago.get(local.id)
+        abonos_mes = Pago.objects.filter(
+            local=local,
+            fecha_pago__year=date.today().year,
+            fecha_pago__month=date.today().month
+        )
+        total_abonado = sum(a.monto for a in abonos_mes)
+        precio_alquiler = local.precio if local.precio is not None else 0
+        local.total_abonado_mes = total_abonado
+        local.mensualidad_pagada = total_abonado >= precio_alquiler
+        local.abonos_mes = abonos_mes.order_by('fecha_pago')
+        local.ultimo_pago = local.abonos_mes.last() if local.abonos_mes else None
 
     return render(request, 'dashboard/dashboard.html', {
         'locales': locales,
