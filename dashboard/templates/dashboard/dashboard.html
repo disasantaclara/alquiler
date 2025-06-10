@@ -31,7 +31,10 @@
         <button class="modo-btn" onclick="toggleMode()" title="Cambiar modo claro/oscuro">
             <span id="icono-modo">☀️</span>
         </button>
-        <h1 class="titulo-login" style="margin-bottom: 1.5rem;">Bienvenido al Registro de Alquileres Edificio Aguirre Tamayo</h1>
+        <div style="width:100%;display:flex;justify-content:flex-start;margin-bottom:0.3em;">
+    <span id="fecha-hora-local" style="font-size:1.1em;font-weight:bold;"></span>
+</div>
+<h1 class="titulo-login" style="margin-bottom: 1em;">Bienvenido al Registro de Alquileres Edificio Aguirre Tamayo</h1>
         
         <!-- Mosaico de tarjetas dinámicas -->
         <div class="mosaico-dashboard">
@@ -123,6 +126,38 @@
                         <span class="slider-toggle"></span>
                     </label>
                 </div>
+                <div>
+                    <strong>Abonos este mes:</strong>
+                    {% if local.abonos_mes %}
+                        <ul style="margin:0;padding-left:1.2em;">
+                        {% for abono in local.abonos_mes %}
+                            <li>
+                                {{ forloop.counter }}º Abono: ${{ abono.monto }} el {{ abono.fecha_pago|fecha_corta }}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        Sin abonos este mes
+                    {% endif %}
+                </div>
+                <div>
+                    <strong>Último pago:</strong>
+                    {% if local.ultimo_pago %}
+                        ${{ local.ultimo_pago.monto }} el {{ local.ultimo_pago.fecha_pago|fecha_corta }}
+                    {% else %}
+                        Sin pagos
+                    {% endif %}
+                </div>
+                <!-- Nueva sección para estado de mensualidad -->
+                {% if not local.mensualidad_pagada %}
+                    <div class="tarjeta-alerta alerta-vencida" style="margin:0.5em 0;">
+                        Mensualidad Impaga, no se puede pasar al siguiente mes.
+                    </div>
+                {% else %}
+                    <div><strong>Próximo pago:</strong>
+                        {{ local.ultimo_pago.fecha_proximo_pago|fecha_corta }}
+                    </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
@@ -369,7 +404,9 @@ if (localStorage.getItem('modo') === 'oscuro') {
     document.body && document.body.classList.add('dark-mode');
 }
 </script>
-<span id="fecha-hora-local"></span>
+<div style="width:100%;display:flex;justify-content:flex-start;">
+    <span id="fecha-hora-local" style="font-size:1.1em;font-weight:bold;"></span>
+</div>
 <script>
 function mostrarFechaHoraLocal() {
     const meses = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];

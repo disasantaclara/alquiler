@@ -46,3 +46,12 @@
 - Se verificó la correcta visualización y funcionamiento de la aplicación en la URL pública de Render.
 - Se dejó lista la base para nuevas funcionalidades y mejoras inteligentes en la gestión de arrendamientos.
 
+## [2025-06-07] Mejoras de formato, filtros y despliegue
+
+- Se implementó el filtro personalizado `fecha_corta` para mostrar fechas en formato `07-jun-2025` (mes en letras, español, 3 letras).
+- Se corrigió el uso de filtros personalizados en los templates, asegurando su carga y funcionamiento.
+- Se estandarizó el uso del signo `$` antes de todas las cantidades monetarias en el dashboard.
+- Se agregó la posibilidad de mostrar la fecha y hora local del navegador como componente reutilizable en cualquier parte de la aplicación.
+- Se documentó el proceso de desarrollo seguro alternando `DEBUG=True` para desarrollo local y `DEBUG=False` para producción.
+- Se verificó y ajustó la configuración de archivos estáticos y middleware para mantener los estilos en producción.
+
